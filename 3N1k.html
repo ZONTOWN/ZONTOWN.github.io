@@ -10,7 +10,7 @@
  <h2 align="center" style="color: white;">Please do not try to find my social media accounts,I closed all my accounts to prevent harassment,You can leave a message below :)
 <style>
     body {
-        background-image: url('zt.jpeg');
+        background-image: url('xd.png');
         background-repeat: no-repeat;
         background-size: cover;
     }
@@ -66,4 +66,21 @@
         }
     </script>
 </body>
+
+function displayMessage(message) {
+    let messagesDiv = document.getElementById('messages');
+    let newMessage = document.createElement('div');
+    newMessage.className = 'message';
+    newMessage.textContent = message;
+    messagesDiv.appendChild(newMessage);
+
+    let messages = JSON.parse(localStorage.getItem('messages')) || [];
+    messages.push(message);
+    localStorage.setItem('messages', JSON.stringify(messages));
+}
+
+window.onload = function() {
+    let messages = JSON.parse(localStorage.getItem('messages')) || [];
+    messages.forEach(displayMessage);
+};
 </html>
