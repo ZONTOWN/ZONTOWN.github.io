@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Message board</title>
-
- <h1 align="center" style="color: white;">3N1k:)</h1>
+    <h1 align="center" style="color: white;">3N1k:)</h1>
 <br>
  <h2 align="center" style="color: white;">Please do not try to find my social media accounts,I closed all my accounts to prevent harassment,You can leave a message below :)
 <style>
@@ -15,56 +14,91 @@
         background-size: cover;
     }
 </style>
+     
     <style>
+        
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
         }
-        #message-board {
-            margin-bottom: 20px;
-        }
-        textarea {
-            width: 100%;
-            height: 100px;
-        }
-        button {
-            margin-top: 10px;
+        .message-board {
+            width: 80%;
+            margin: 0 auto;
         }
         .message {
-            margin-top: 10px;
-            padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .reply {
+            margin-left: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Message board</h1>
-    <div id="message-board">
-        <textarea id="message" placeholder="Enter your message..."></textarea>
-        <button id="submit">send</button>
+    <div class="message-board">
+        <h1>Message board</h1>
+        <form id="messageForm">
+            <label for="name">name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+            <label for="message">message:</label><br>
+            <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+            <input type="submit" value="send a message">
+        </form>
+        <div id="messageList"></div>
     </div>
-    <div id="messages"></div>
 
     <script>
-        document.getElementById('submit').addEventListener('click', function() {
-            let message = document.getElementById('message').value;
-            if (message) {
-                displayMessage(message);
-                document.getElementById('message').value = '';
-            } else {
-                alert('Please enter a message!');
-            }
+        
+        document.getElementById('messageForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var name = document.getElementById('name').value;
+            var message = document.getElementById('message').value;
+            var messageList = document.getElementById('messageList');
+
+            var newMessage = document.createElement('div');
+            newMessage.className = 'message';
+            newMessage.innerHTML = `<strong>${name}:</strong> ${message}<br><button onclick="showReplyForm(this)">回复</button>`;
+
+            messageList.appendChild(newMessage);
+
+            
+            document.getElementById('name').value = '';
+            document.getElementById('message').value = '';
         });
 
-        function displayMessage(message) {
-            let messagesDiv = document.getElementById('messages');
-            let newMessage = document.createElement('div');
-            newMessage.className = 'message';
-            newMessage.textContent = message;
-            messagesDiv.appendChild(newMessage);
+        function showReplyForm(button) {
+            var replyForm = document.createElement('form');
+            replyForm.className = 'reply-form';
+            replyForm.innerHTML = `
+                <label for="replyName">name:</label>
+                <input type="text" id="replyName" name="replyName" required><br><br>
+                <label for="replyMessage">reply:</label><br>
+                <textarea id="replyMessage" name="replyMessage" rows="2" cols="50" required></textarea><br><br>
+                <input type="submit" value="reply message">
+            `;
+
+            var message = button.parentNode;
+            var replies = message.querySelector('.replies') || document.createElement('div');
+            replies.className = 'replies';
+
+            replyForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                var replyName = replyForm.querySelector('#replyName').value;
+                var replyMessage = replyForm.querySelector('#replyMessage').value;
+
+                var newReply = document.createElement('div');
+                newReply.className = 'message reply';
+                newReply.innerHTML = `<strong>${replyName}:</strong> ${replyMessage}`;
+
+                replies.appendChild(newReply);
+                
+                replyForm.querySelector('#replyName').value = '';
+                replyForm.querySelector('#replyMessage').value = '';
+                message.removeChild(replyForm);
+            });
+
+            message.appendChild(replyForm);
         }
     </script>
 </body>
-
 </html>
